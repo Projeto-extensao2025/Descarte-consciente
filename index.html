@@ -1,27 +1,70 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Localizador de Filiais</title>
+    <title>Localizador de PEVs</title>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA60hBk_LFnjdEClfi02jfI1KlaHPiDPc4&libraries=geometry"></script>
     <style>
-      #map {
-        height: 100%;
-      }
-      html, body {
-        height: 100%;
+      body {
+        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
+      }
+      header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        color: #333;
+      }
+      header p {
+        color: #666;
+      }
+      #content {
+        padding: 20px;
+        text-align: center;
+      }
+      #map-container {
+        padding: 20px;
+      }
+      #map {
+        width: 100%;
+        height: 500px;
+        border: 1px solid #ddd;
       }
     </style>
   </head>
   <body>
-    <div id="map"></div>
+    <!-- Cabeçalho -->
+    <header>
+      <h1>Localizador de PEVs (Pontos de Entrega Voluntária)</h1>
+      <p>
+        Utilize nosso localizador para encontrar o PEV mais próximo de você. Esses pontos 
+        estão disponíveis para a população descartar resíduos recicláveis de forma correta e 
+        contribuir para um futuro mais sustentável.
+      </p>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <div id="content">
+      <p>
+        Encontre o local mais próximo para descartar resíduos recicláveis como papel, plástico, 
+        vidro e metais. Todos os PEVs estão marcados no mapa para facilitar o acesso.
+      </p>
+    </div>
+
+    <!-- Container do mapa -->
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
+
     <script>
       let map;
-      let filiais = [
-        { nome: "Filial 1", lat: -23.12345, lng: -45.12345 },
-        { nome: "Filial 2", lat: -23.54321, lng: -45.54321 },
-        { nome: "Filial 3", lat: -23.67890, lng: -45.67890 },
+      let pevs = [
+        { nome: "PEV 1", lat: -23.12345, lng: -45.12345 },
+        { nome: "PEV 2", lat: -23.54321, lng: -45.54321 },
+        { nome: "PEV 3", lat: -23.67890, lng: -45.67890 },
       ];
 
       function initMap() {
@@ -31,12 +74,12 @@
           zoom: 12,
         });
 
-        // Marca todas as filiais no mapa
-        filiais.forEach((filial) => {
+        // Marca todos os PEVs no mapa
+        pevs.forEach((pev) => {
           new google.maps.Marker({
-            position: { lat: filial.lat, lng: filial.lng },
+            position: { lat: pev.lat, lng: pev.lng },
             map: map,
-            title: filial.nome,
+            title: pev.nome,
           });
         });
 
@@ -57,30 +100,30 @@
                 position: userLocation,
                 map: map,
                 title: "Você está aqui!",
-                icon: { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" }, // Ícone azul para o usuário
+                icon: { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" },
               });
 
-              // Calcula a filial mais próxima
-              let filialMaisProxima = filiais.reduce((maisProxima, filial) => {
+              // Calcula o PEV mais próximo
+              let pevMaisProximo = pevs.reduce((maisProximo, pev) => {
                 const distancia = google.maps.geometry.spherical.computeDistanceBetween(
                   new google.maps.LatLng(userLocation.lat, userLocation.lng),
-                  new google.maps.LatLng(filial.lat, filial.lng)
+                  new google.maps.LatLng(pev.lat, pev.lng)
                 );
-                if (!maisProxima || distancia < maisProxima.distancia) {
-                  return { ...filial, distancia };
+                if (!maisProximo || distancia < maisProximo.distancia) {
+                  return { ...pev, distancia };
                 }
-                return maisProxima;
+                return maisProximo;
               }, null);
 
-              // Marca a filial mais próxima com um marcador especial
+              // Marca o PEV mais próximo com um marcador especial
               new google.maps.Marker({
-                position: { lat: filialMaisProxima.lat, lng: filialMaisProxima.lng },
+                position: { lat: pevMaisProximo.lat, lng: pevMaisProximo.lng },
                 map: map,
-                title: `Filial mais próxima: ${filialMaisProxima.nome}`,
-                icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" }, // Ícone verde para a filial mais próxima
+                title: `PEV mais próximo: ${pevMaisProximo.nome}`,
+                icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" },
               });
 
-              alert(`A filial mais próxima é: ${filialMaisProxima.nome}`);
+              alert(`O PEV mais próximo é: ${pevMaisProximo.nome}`);
             },
             (error) => {
               console.error("Erro ao obter a localização:", error.message);
@@ -97,29 +140,3 @@
     </script>
   </body>
 </html>
-```
-
----
-
-### Alterações feitas:
-1. **Exibição de todas as filiais**:
-   - Usei `filiais.forEach()` para adicionar um marcador para cada filial no mapa.
-   - Cada marcador exibe o nome da filial ao passar o mouse.
-
-2. **Destaque da filial mais próxima**:
-   - Adicionei um marcador especial com ícone verde para a filial mais próxima.
-
-3. **Destaque da posição do usuário**:
-   - O marcador do usuário agora usa um ícone azul para diferenciá-lo das filiais.
-
-4. **Estilo aprimorado**:
-   - Ícones personalizados ajudam na visualização (ícone azul para o usuário e verde para a filial mais próxima).
-
----
-
-### Resultado esperado:
-- Quando o mapa for carregado, todas as filiais serão exibidas.
-- A posição do usuário será centralizada no mapa com um marcador azul.
-- A filial mais próxima será destacada com um marcador verde e um alerta será exibido com seu nome.
-
-Teste e veja se funciona corretamente! Caso precise ajustar mais alguma coisa, é só me dizer. 😊[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/Advanced-Web-Techniques-project-group/robinsnest/tree/30029abddfbc3a1aff1169c1d4ee92590af08631/Location.php?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/JuanDavidCastellomRodriguez/cmd/tree/2da956ff45b70990d4989a5d74939129dcd8dd4b/resources%2Fviews%2Fmapa%2Fmaps.blade.php?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "2")
