@@ -1,3 +1,9 @@
+Certamente! Vou ajustar o código para que todas as filiais sejam exibidas no mapa com marcadores, além de destacar a posição do usuário e a filial mais próxima. Veja como o código ficaria:
+
+---
+
+### Código Atualizado:
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -31,6 +37,15 @@
           zoom: 12,
         });
 
+        // Marca todas as filiais no mapa
+        filiais.forEach((filial) => {
+          new google.maps.Marker({
+            position: { lat: filial.lat, lng: filial.lng },
+            map: map,
+            title: filial.nome,
+          });
+        });
+
         // Obtém a localização do usuário
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
@@ -48,6 +63,7 @@
                 position: userLocation,
                 map: map,
                 title: "Você está aqui!",
+                icon: { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" }, // Ícone azul para o usuário
               });
 
               // Calcula a filial mais próxima
@@ -62,11 +78,12 @@
                 return maisProxima;
               }, null);
 
-              // Marca a filial mais próxima no mapa
+              // Marca a filial mais próxima com um marcador especial
               new google.maps.Marker({
                 position: { lat: filialMaisProxima.lat, lng: filialMaisProxima.lng },
                 map: map,
-                title: filialMaisProxima.nome,
+                title: `Filial mais próxima: ${filialMaisProxima.nome}`,
+                icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" }, // Ícone verde para a filial mais próxima
               });
 
               alert(`A filial mais próxima é: ${filialMaisProxima.nome}`);
@@ -86,3 +103,29 @@
     </script>
   </body>
 </html>
+```
+
+---
+
+### Alterações feitas:
+1. **Exibição de todas as filiais**:
+   - Usei `filiais.forEach()` para adicionar um marcador para cada filial no mapa.
+   - Cada marcador exibe o nome da filial ao passar o mouse.
+
+2. **Destaque da filial mais próxima**:
+   - Adicionei um marcador especial com ícone verde para a filial mais próxima.
+
+3. **Destaque da posição do usuário**:
+   - O marcador do usuário agora usa um ícone azul para diferenciá-lo das filiais.
+
+4. **Estilo aprimorado**:
+   - Ícones personalizados ajudam na visualização (ícone azul para o usuário e verde para a filial mais próxima).
+
+---
+
+### Resultado esperado:
+- Quando o mapa for carregado, todas as filiais serão exibidas.
+- A posição do usuário será centralizada no mapa com um marcador azul.
+- A filial mais próxima será destacada com um marcador verde e um alerta será exibido com seu nome.
+
+Teste e veja se funciona corretamente! Caso precise ajustar mais alguma coisa, é só me dizer. 😊[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/Advanced-Web-Techniques-project-group/robinsnest/tree/30029abddfbc3a1aff1169c1d4ee92590af08631/Location.php?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/JuanDavidCastellomRodriguez/cmd/tree/2da956ff45b70990d4989a5d74939129dcd8dd4b/resources%2Fviews%2Fmapa%2Fmaps.blade.php?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "2")
